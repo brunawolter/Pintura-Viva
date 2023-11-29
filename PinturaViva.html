@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PinturaViva</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Now', sans-serif;
+            background-color: white;
+            color: black;
+        }
+        #canvas-container {
+            position: relative;
+            width: 80%; /* Ajuste a largura do quadrado conforme necessário */
+            height: 70vh; /* Ajuste a altura do quadrado conforme necessário */
+            border: 2px solid white; /* Adiciona uma borda branca ao redor do quadrado */
+            overflow: hidden; /* Garante que os elementos dentro do quadrado sejam recortados */
+            margin-top: 80px; /* Margem superior */
+            margin-bottom: 100px; /* Margem inferior */
+        }
+
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .draggable {
+            position: absolute;
+            user-select: none;
+            cursor: grab;
+        }
+
+        #instructions {
+            position: fixed;
+            bottom: 50px; /* Ajuste a posição vertical conforme necessário */
+            left: 50%;
+            transform: translateX(-50%);
+            color: black;
+            font-size: 16px;
+            font-weight: lighter;
+            line-height: 1.5;
+            text-align: center;
+            z-index: 999; /* Garante que as instruções estejam sempre em primeiro plano */
+        }
+
+        #title {
+            position: fixed;
+            top: 20px; /* Ajuste a posição vertical conforme necessário */
+            left: 50%;
+            transform: translateX(-50%);
+            color: black;
+            font-size: 24px;
+            font-weight: lighter;
+            z-index: 1000; /* Garante que o título esteja na frente de tudo */
+        }
+    </style>
+</head>
+<body>
+
+<div id="title">Pintura Viva</div>
+
+<div id="canvas-container">
+    <div id="canvas">
+        <!-- Elementos arrastáveis serão adicionados aqui -->
+    </div>
+</div>
+
+<div id="instructions">
+    <p>Clique duas vezes em um objeto, segure, arraste e solte onde você desejar. Escute a música disponível no link e reviva nossa tela: https://youtu.be/T13se_2A7c8?si=HC7VsU7tUFToUU5a</p>
+    <p>Para terminar, tire um print, compartilhe nas suas redes sociais e nos marque! @pinturaviva</p>
+</div>
+
+<script>
+    function makeDraggable(element) {
+        let offsetX, offsetY, isDragging = false;
+
+        function handleMouseDown(e) {
+            if (!isDragging) {
+                isDragging = true;
+                offsetX = e.clientX - element.getBoundingClientRect().left;
+                offsetY = e.clientY - element.getBoundingClientRect().top;
+
+                document.addEventListener('mousemove', handleMouseMove);
+                document.addEventListener('mouseup', handleMouseUp);
+            }
+        }
+
+        function handleMouseMove(e) {
+            if (isDragging) {
+                const x = e.clientX - offsetX;
+                const y = e.clientY - offsetY;
+
+                const canvasContainer = document.getElementById('canvas-container');
+                const maxX = canvasContainer.offsetWidth - element.offsetWidth;
+                const maxY = canvasContainer.offsetHeight - element.offsetHeight;
+
+                element.style.left = `${Math.max(0, Math.min(x, maxX))}px`;
+                element.style.top = `${Math.max(0, Math.min(y, maxY))}px`;
+            }
+        }
+
+        function handleMouseUp() {
+            isDragging = false;
+        }
+
+        element.addEventListener('mousedown', handleMouseDown);
+    }
+
+    const canvas = document.getElementById('canvas');
+
+    const imageDetails = [
+        { link: 'https://i.postimg.cc/L6Fsq2JK/04.png', width: 350, height: 240 },
+        { link: 'https://i.postimg.cc/S2zbB06w/01.png', width: 350, height: 240 },
+        { link: 'https://i.postimg.cc/ft6DyWWz/02.png', width: 300, height: 360 },
+        { link: 'https://i.postimg.cc/MHJ0vgk6/03.png', width: 300, height: 360 },
+        { link: 'https://i.postimg.cc/Tpjf2Xzx/1.png', width: 40, height: 40 },
+        { link: 'https://i.postimg.cc/HcJTT8gv/2.png', width: 120, height: 250 },
+        { link: 'https://i.postimg.cc/QKQGMpnm/10.png', width: 40, height: 30 },
+        { link: 'https://i.postimg.cc/F13QG4sS/11.png', width: 50, height: 50 },
+        { link: 'https://i.postimg.cc/LnSFbbnb/12.png', width: 50, height: 30},
+        { link: 'https://i.postimg.cc/3wBzCMCw/13.png', width: 120, height: 120 },
+        { link: 'https://i.postimg.cc/DSyk24QQ/14.png', width: 80, height: 110 },
+        { link: 'https://i.postimg.cc/hXyFh4Mk/15.png', width: 150, height: 60 },
+        { link: 'https://i.postimg.cc/7CfFzvWf/16.png', width: 80, height: 120 },
+        { link: 'https://i.postimg.cc/H8CRFrsy/17.png', width: 200, height: 130 },
+        { link: 'https://i.postimg.cc/7GzjB3D4/18.png', width: 60, height: 60 },
+        { link: 'https://i.postimg.cc/TyFZqkzQ/19.png', width: 60, height: 60 },
+        { link: 'https://i.postimg.cc/q6XSrpzZ/20.png', width: 60, height: 60 },
+        { link: 'https://i.postimg.cc/xqKWM3ty/21.png', width: 80, height: 150 },
+        { link: 'https://i.postimg.cc/WhTxnqyR/22.png', width: 60, height: 80 },
+        { link: 'https://i.postimg.cc/YhRZyqcv/23.png', width: 120, height: 80 },
+        { link: 'https://i.postimg.cc/215MpRm2/24.png', width: 70, height: 60 },
+        { link: 'https://i.postimg.cc/cHcrbFhF/25.png', width: 80, height: 150 },
+        { link: 'https://i.postimg.cc/fTbKQRyf/26.png', width: 250, height: 30 },
+        { link: 'https://i.postimg.cc/8F20r7v0/27.png', width: 100, height: 80 },
+        { link: 'https://i.postimg.cc/nXHZCPxD/3.png', width: 150, height: 120 },
+        { link: 'https://i.postimg.cc/svC3R20K/4.png', width: 200, height: 35 },
+        { link: 'https://i.postimg.cc/CnkYqydj/5.png', width: 100, height: 100 },
+        { link: 'https://i.postimg.cc/jC7R9fvL/6.png', width: 120, height: 80 },
+        { link: 'https://i.postimg.cc/NKptTkGP/7.png', width: 150, height: 120 },
+        { link: 'https://i.postimg.cc/DWNKpfXr/8.png', width: 80, height: 300 },
+        { link: 'https://i.postimg.cc/fSnQZH5k/9.png', width: 50, height: 60
+     },
+    ];
+
+    imageDetails.forEach(({ link, width, height }) => {
+        const draggableElement = document.createElement('div');
+        draggableElement.className = 'draggable';
+
+        const initialX = Math.max(0, Math.min(Math.random() * (canvas.offsetWidth - width), canvas.offsetWidth - width));
+        const initialY = Math.max(0, Math.min(Math.random() * (canvas.offsetHeight - height), canvas.offsetHeight - height));
+
+        draggableElement.style.left = `${initialX}px`;
+        draggableElement.style.top = `${initialY}px`;
+
+        const imgElement = document.createElement('img');
+        imgElement.src = link;
+        imgElement.alt = 'Imagem Arrastável';
+
+        imgElement.style.width = `${width}px`;
+        imgElement.style.height = `${height}px`;
+
+        draggableElement.appendChild(imgElement);
+
+        makeDraggable(draggableElement);
+
+        canvas.appendChild(draggableElement);
+    });
+</script>
+
+</body>
+</html>
